@@ -7,6 +7,9 @@ import javafx.scene.layout.*;
 
 import java.util.List;
 
+/**
+ * The main scene of the application.
+ */
 public class MainScene extends StackPane {
   DeckOfCards deckOfCards;
   HandOfCards hand;

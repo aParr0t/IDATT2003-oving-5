@@ -6,6 +6,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+/**
+ * A view class for displaying a playing card.
+ */
 public class PlayingCardView extends StackPane {
   public PlayingCardView(PlayingCard card) {
     // Card dimensions
