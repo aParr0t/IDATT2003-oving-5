@@ -3,17 +3,15 @@ package edu.ntnu.iir.bidata;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
+import javafx.scene.layout.*;
+
+import java.util.List;
 
 public class MainScene extends StackPane {
   DeckOfCards deckOfCards;
   HandOfCards hand;
   GridPane cardDisplayArea;
+  Label sumValueLabel, heartsValueLabel, flushValueLabel, queenValueLabel;
 
   public MainScene() {
     deckOfCards = new DeckOfCards();
@@ -48,26 +46,36 @@ public class MainScene extends StackPane {
     infoGrid.setHgap(10);
     infoGrid.setVgap(10);
 
+    // sum info
+    HBox sumContainer = new HBox(10);
     Label sumLabel = new Label("Sum of the faces:");
-    TextField sumField = new TextField();
-    sumField.setPrefWidth(50);
+    sumValueLabel = new Label();
+    sumValueLabel.setPrefWidth(50);
+    sumContainer.getChildren().addAll(sumLabel, sumValueLabel);
 
+    // hearts info
+    HBox heartsContainer = new HBox(10);
     Label heartsLabel = new Label("Cards of hearts:");
-    TextField heartsField = new TextField();
-    heartsField.setPrefWidth(150);
+    heartsValueLabel = new Label();
+    heartsValueLabel.setPrefWidth(150);
+    heartsContainer.getChildren().addAll(heartsLabel, heartsValueLabel);
 
-    boolean isFlush = false;
-    Label flushLabel = new Label("Flush: " + (isFlush ? "Yes" : "No"));
+    // flush info
+    HBox flushContainer = new HBox(10);
+    Label flushLabel = new Label("Flush: ");
+    flushValueLabel = new Label();
+    flushContainer.getChildren().addAll(flushLabel, flushValueLabel);
 
-    boolean hasQueenOfSpades = false;
-    Label queenLabel = new Label("Queen of spades: " + (hasQueenOfSpades ? "Yes" : "No"));
+    // queen info
+    HBox queenContainer = new HBox(10);
+    Label queenLabel = new Label("Queen of spades: ");
+    queenValueLabel = new Label();
+    queenContainer.getChildren().addAll(queenLabel, queenValueLabel);
 
-    infoGrid.add(sumLabel, 0, 0);
-    infoGrid.add(sumField, 1, 0);
-    infoGrid.add(heartsLabel, 2, 0);
-    infoGrid.add(heartsField, 3, 0);
-    infoGrid.add(flushLabel, 0, 1);
-    infoGrid.add(queenLabel, 1, 1);
+    infoGrid.add(sumContainer, 0, 0);
+    infoGrid.add(heartsContainer, 1, 0);
+    infoGrid.add(flushContainer, 0, 1);
+    infoGrid.add(queenContainer, 1, 1);
 
     mainLayout.setBottom(infoGrid);
   }
@@ -81,12 +89,12 @@ public class MainScene extends StackPane {
     cardDisplayArea.getChildren().clear();
     int numberOfRows = 2;
     int cardsInARow = (int) Math.ceil((double) numberOfCards / numberOfRows);
-    PlayingCard[] cards = hand.getCards();
+    List<PlayingCard> cards = hand.getCards();
     for (int y=0; y<numberOfRows; y++) {
       for (int x=0; x<cardsInARow; x++) {
         int cardIndex = y * cardsInARow + x;
         if (cardIndex < numberOfCards) {
-          PlayingCardView cardView = new PlayingCardView(cards[cardIndex]);
+          PlayingCardView cardView = new PlayingCardView(cards.get(cardIndex));
           cardDisplayArea.add(cardView, x, y);
         }
       }
@@ -97,6 +105,29 @@ public class MainScene extends StackPane {
    * Event handler for the "Check hand" button.
    */
   private void checkHandHandler() {
-    System.out.println("Check hand button clicked");
+    List<PlayingCard> cards = hand.getCards();
+
+    // sum of cards
+    int sumOfCards = CardStatistics.sumOfCards(cards);
+    sumValueLabel.setText(Integer.toString(sumOfCards));
+
+    // all heart cards
+    List<PlayingCard> allHeartCards = CardStatistics.getAllOfType(cards, 'H');
+    String heartsText;
+    if (allHeartCards.isEmpty()) {
+      heartsText = "No hearts";
+    } else {
+      List<String> heartStrings = allHeartCards.stream().map(PlayingCard::getAsString).toList();
+      heartsText = String.join(", ", heartStrings);
+    }
+    heartsValueLabel.setText(heartsText);
+
+    // flush
+    boolean isFlush = CardStatistics.isFlush(cards);
+    flushValueLabel.setText(isFlush ? "Yes" : "No");
+
+    // queen of spades
+    boolean hasQueenOfSpades = CardStatistics.cardExistsAmongCards(cards, new PlayingCard('S', 13));
+    queenValueLabel.setText(hasQueenOfSpades ? "Yes" : "No");
   }
 }

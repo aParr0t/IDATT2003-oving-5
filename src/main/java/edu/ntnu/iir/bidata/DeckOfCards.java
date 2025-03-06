@@ -1,5 +1,7 @@
 package edu.ntnu.iir.bidata;
 
+import java.util.List;
+
 public class DeckOfCards {
   private PlayingCard[] deck = null;
 
@@ -31,9 +33,7 @@ public class DeckOfCards {
     }
 
     // Copy the first n cards from the shuffled deck
-    PlayingCard[] hand = new PlayingCard[n];
-    System.arraycopy(deck, 0, hand, 0, n);
-
+    List<PlayingCard> hand = List.of(deck).subList(0, n);
     return new HandOfCards(hand);
   }
 }

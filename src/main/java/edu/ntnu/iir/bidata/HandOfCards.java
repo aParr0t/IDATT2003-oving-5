@@ -1,13 +1,15 @@
 package edu.ntnu.iir.bidata;
 
-public class HandOfCards {
-  private PlayingCard[] cards = null;
+import java.util.List;
 
-  public HandOfCards(PlayingCard[] cards) {
+public class HandOfCards {
+  private List<PlayingCard> cards = null;
+
+  public HandOfCards(List<PlayingCard> cards) {
     this.cards = cards;
   }
 
-  public PlayingCard[] getCards() {
+  public List<PlayingCard> getCards() {
     return cards;
   }
 }
