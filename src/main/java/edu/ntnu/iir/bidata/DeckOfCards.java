@@ -12,11 +12,6 @@ public class DeckOfCards {
         deck[cardIndex++] = new PlayingCard(suit, face);
       }
     }
-
-    // print the deck of cards
-    for (PlayingCard card : deck) {
-      System.out.println(card.getAsString());
-    }
   }
 
   /**
