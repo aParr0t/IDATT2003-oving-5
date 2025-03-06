@@ -35,13 +35,15 @@ public class DeckOfCards {
     if (n > deck.length) {
       throw new IllegalArgumentException("Cannot deal more cards than are in the deck.");
     }
-    // Shuffle the deck
-    for (int i = 0; i < deck.length; i++) {
-      int j = (int) (Math.random() * deck.length);
+
+    // Fisher-Yates shuffle
+    for (int i = deck.length - 1; i > 0; i--) { // Iterate backwards
+      int j = (int) (Math.random() * (i + 1)); // j is between 0 and i (inclusive)
       PlayingCard temp = deck[i];
       deck[i] = deck[j];
       deck[j] = temp;
     }
+
     // Copy the first n cards from the shuffled deck
     List<PlayingCard> hand = List.of(deck).subList(0, n);
     return new HandOfCards(hand);
